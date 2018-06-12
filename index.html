@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Weather</title>
+  <link rel="shortcut icon" href="https://openweathermap.org/themes/openweathermap/assets/vendor/owm/img/icons/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style type="text/css">
+    .btn-grey {
+          color: #fff;
+          background-color: #eee;
+          border-color: #eee;
+          padding-bottom: 13px;
+          padding-top: 12px;
+          padding-left: 15px;
+          padding-right: 15px;
+    }
+      .form-control {
+          padding-top: 25px;
+          padding-bottom: 25px;
+    }
+        body {
+          font-family: 'Roboto', sans-serif;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet">
+    <script src="https://maps.googleapis.com/maps/api/js?key=&libraries=places"></script>
+    <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap-theme.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body class="container">
+  <div id="app">
+
+    <!-- search start -->
+
+    <div id="app" class="row" style="padding-top:5em">
+      <div class="col-sm-offset-2 col-sm-6 ">
+          <input ref="autocomplete" v-model="message"  type="text" value="message" placeholder="Search" class="form-control" style="font-size: 18px;border-radius: 2px;padding-top: 25px;padding-bottom: 25px;"> 
+      </div>
+      <div class="col-sm-1">
+          <button class="btn btn-grey " style="padding: 14px;" @click="onclick('metric',null)" >
+            <img src="icons/search.svg">
+          </button>
+      </div>
+      <div class="col-sm-1" style="padding-left:0">
+          <button class="btn btn-grey"  style="padding: 14px;" @click="getLocation()" >
+            <img src="icons/crosshair.svg">
+          </button>
+      </div>
+    </div>
+    <!-- search end-->
+
+      <!-- weather name detail  start-->
+      
+    <div class="row" v-if="weathername">
+      <div class="col-sm-offset-2" style="padding-left:13px;">
+            <h1> {{ weathername}} {{ weathercountry }}</h1>
+      </div>
+    </div>
+
+      <div class="row" v-if="weathername">
+        <div class="col-sm-offset-2 col-sm-3" style="padding-left:13px;">
+          <h4>{{ day }}</h4>
+          <h4>{{ description }}</h4>
+          <div class="col-sm-3" style="padding-left: 0; margin-top: 15px">
+
+            <div v-if="id >= 100 && id < 200"><img src="icons/sun.svg" width="60px" height="60px"></div>
+            <div v-if="id >= 200 && id < 300"><img src="icons/cloud-lightning.svg" width="60px" height="60px"></div>
+            <div v-if="id >= 300 && id < 400"><img src="icons/cloud-drizzle.svg" width="60px" height="60px"></div>
+            <div v-if="id >= 500 && id < 600"><img src="icons/cloud-rain.svg" width="60px" height="60px"></div>
+            <div v-if="id >= 600 && id < 700"><img src="icons/cloud-snow.svg" width="60px" height="60px"></div>
+            <div v-if="id >= 700 && id < 800"><img src="icons/wind.svg" width="60px" height="60px"></div>
+            <div v-if="id == 800"><img src="icons/sun.svg" width="60px" height="60px"></div>
+            <div v-if="id > 800"><img src="icons/cloud.svg" width="60px" height="60px"></div>
+            
+        </div>
+        <div class="col-sm-5" style="padding-right: o">
+            
+            <div id="app" style="font-size: 65px;margin-top: 0;">
+              <!-- Temperature : <strong> {{ info.main.temp }}</strong> -->
+              {{ temperature }}
+            </div> 
+            
+          </div>
+          <div class="col-sm-3 " style="padding-left:0;font-size:20px ">
+            <div >
+              <sup ><button class="btn" style="padding: 1px" @click = "onclick('imperial',city)"><sup>o</sup>F</button> | <button class="btn" style="padding: 1px" @click = "onclick('metric',city)"><sup>o</sup>C</button></sup>
+              
+            </div>
+          </div>
+
+          <!-- weather name detail end -->
+
+
+          </div>
+          <div class=" col-sm-5" style="padding-left:45px ">
+            <ul style="list-style-type: none;font-size: 15px ">
+              <div class="col-sm-6">
+                <li style="padding-bottom: 12px; float: right">
+                  Pressure : <strong> {{ pressure }} </strong> hpa
+                </li>
+                <li style="padding-bottom: 12px; float: right">
+                  Humidity: <strong>{{ humidity }}</strong> %
+                </li>
+                <li style="padding-bottom: 12px; float: right">Wind: <strong>{{ windspeed }}</strong> m/s
+                </li>
+                <li style="padding-bottom: 12px; float: right">Direction: <strong>{{ windDirection }}</strong><sup>o</sup>
+                </li>
+              </div>
+              <div class=" col-sm-6">
+                <li style="padding-bottom: 12px; float: right">Min-Temp: <strong>{{ min_temp }}</strong><sup>o</sup>C
+                </li>
+                <li style="padding-bottom: 12px; float: right">Max-Temp: <strong>{{ max_temp }}</strong><sup>o</sup>C
+                </li>
+                <li style="padding-bottom: 12px; float: right">Grnd-Level: <strong v-if="grndlevel">{{ grndlevel }}</strong><strong v-if="!grndlevel">....</strong> m
+                </li>
+                <li style="padding-bottom: 12px; float: right">Sea-Level: <strong v-if="sealevel">{{ sealevel }}</strong><strong v-if="!sealevel">....</strong> m
+                </li>
+              </div>
+
+            </ul>
+          </div>
+        </div>
+        
+
+        
+      </div>  
+      
+   
+    
+
+
+
+    <script type="text/javascript" src="weather.js"></script>
+  </div>
+</body>
+</html>
