@@ -52,7 +52,7 @@
     </div>
     <!-- search end-->
 
-      <!-- weather name detail  start-->
+      <!-- weather name and temperature details  start-->
       
     <div class="row" v-if="weathername">
       <div class="col-sm-offset-2" style="padding-left:13px;">
@@ -75,26 +75,28 @@
             <div v-if="id == 800"><img src="icons/sun.svg" width="60px" height="60px"></div>
             <div v-if="id > 800"><img src="icons/cloud.svg" width="60px" height="60px"></div>
             
-        </div>
-        <div class="col-sm-5" style="padding-right: o">
+          </div>
+          <div class="col-sm-5" style="padding-right: o">
             
             <div id="app" style="font-size: 65px;margin-top: 0;">
-              <!-- Temperature : <strong> {{ info.main.temp }}</strong> -->
               {{ temperature }}
             </div> 
             
           </div>
+          <!-- weather units start -->
           <div class="col-sm-3 " style="padding-left:0;font-size:20px ">
             <div >
               <sup ><button class="btn" style="padding: 1px" @click = "onclick('imperial',city)"><sup>o</sup>F</button> | <button class="btn" style="padding: 1px" @click = "onclick('metric',city)"><sup>o</sup>C</button></sup>
               
             </div>
           </div>
+          <!-- weather units end -->
 
-          <!-- weather name detail end -->
+          <!-- weather name and temperature details end -->
+          <!-- weather remaining details start -->
 
 
-          </div>
+        </div>
           <div class=" col-sm-5" style="padding-left:45px ">
             <ul style="list-style-type: none;font-size: 15px ">
               <div class="col-sm-6">
@@ -123,16 +125,8 @@
             </ul>
           </div>
         </div>
-        
-
-        
-      </div>  
-      
-   
-    
-
-
-
+        <!-- weather remaining details end -->
+    </div> 
     <script type="text/javascript" src="weather.js"></script>
   </div>
 </body>

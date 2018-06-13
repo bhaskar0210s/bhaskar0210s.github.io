@@ -1,5 +1,7 @@
 var owm = new Vue({
   el :'#app',
+
+  // initializing instances
   data:
   {
       message:null,
@@ -25,7 +27,8 @@ var owm = new Vue({
       city:null,
 
   },
-    // AIzaSyA63dXcuCocz8R2HAsMUGY0M-WbOFEXNSg
+  // watching the change in city(location)
+    
     watch:{
       message: function(val) {
         if(val.length > 0) {
@@ -34,36 +37,31 @@ var owm = new Vue({
       }
     },
 
-    // watch: 
-    // {
-    //   message:function(oldval,newval){
-    //     console.log(oldval+"   "+newval)
-    //   }
-          
-    // },
+   
     
     mounted()
     {
+      // google autocomplete
       this.autocomplete = new google.maps.places.Autocomplete(
         (this.$refs.autocomplete),
         {types: ['geocode']});
-
       this.autocomplete.addListener('place_changed', this.fillInAddress);
     },
 
     methods:
     {
+      // google autocomplete single click selection
       fillInAddress()
       {
          var place = this.autocomplete.getPlace();
-         console.log(place.name);
+         
          this.message = place.name;
          this.onclick('metric',null);
       },
 
 
 
-
+      // gps location
       getLocation()
       {
           if (navigator.geolocation)
@@ -75,12 +73,14 @@ var owm = new Vue({
               x.innerHTML="Geolocation is not supported by this browser.";
           }
       },
+      // showing position using lat and lon
       showPosition(position)
       {
         lat=position.coords.latitude;
         lon=position.coords.longitude;
         this.displayLocation(lat,lon);
       },
+      // errors
       showError(error)
       {
           switch(error.code)
@@ -99,6 +99,7 @@ var owm = new Vue({
               break;
           }
       },
+      // displaying the location 
       displayLocation(latitude,longitude)
       {
           const t = this;
@@ -120,7 +121,7 @@ var owm = new Vue({
                           t.city=value[count-3].slice(1);
                           t.message=t.city;
                           t.onclick('metric',t.city);
-                          console.log(t.city.slice(1));
+                          c
 
                       }
                       else  {
@@ -135,49 +136,40 @@ var owm = new Vue({
       },
 
 
-      
+      // fetching the data from html and js and calculating the results
       onclick(unit,city) {
         const t = this;
-        // console.log(t.autocomplete.gm_bindings_.bounds[6].gd.formattedPrediction);
-         console.log(t.message);
+        
         if (t.city!= null) 
         { 
           t.message = t.city;
-          console.log(t.message)
+          
         }
-        
-        
         var url  = 'https://api.openweathermap.org/data/2.5/find?q='+ t.message +'&units='+ unit +'&type=like&appid=766b78c39446a8fa6313c3b7b2063ade';
-          console.log(url);
-        
         axios.get(url)
           .then(function (response) {
-            t.weather = response.data;
-            t.id = t.weather.list[0].weather[0].id;
-            t.weathername = t.weather.list[0].name + ', ' + t.weather.list[0].sys.country;
+            t.weather = response.data.list[0];
+            t.id = t.weather.weather[0].id;
+            t.weathername = t.weather.name + ', ' + t.weather.sys.country;
             
-            t.temperature = t.weather.list[0].main.temp.toFixed(0);
-            t.pressure = t.weather.list[0].main.pressure;
-            t.min_temp = t.weather.list[0].main.temp_min;
-            t.max_temp = t.weather.list[0].main.temp_max;
-            t.windspeed = t.weather.list[0].wind.speed;
-            t.windDirection =  t.weather.list[0].wind.deg;
-            t.humidity = t.weather.list[0].main.humidity;
-            t.grndlevel = t.weather.list[0].main.grnd_level;
-            t.sealevel = t.weather.list[0].main.sea_level;
+            t.temperature = t.weather.main.temp.toFixed(0);
+            t.pressure = t.weather.main.pressure;
+            t.min_temp = t.weather.main.temp_min;
+            t.max_temp = t.weather.main.temp_max;
+            t.windspeed = t.weather.wind.speed;
+            t.windDirection =  t.weather.wind.deg;
+            t.humidity = t.weather.main.humidity;
+            t.grndlevel = t.weather.main.grnd_level;
+            t.sealevel = t.weather.main.sea_level;
             
-            t.day = t.Unix_timestamp(t.weather.list[0].dt);
-            t.description = t.weather.list[0].weather[0].description.toUpperCase();
-           
-
+            t.day = t.Unix_timestamp(t.weather.dt);
+            t.description = t.weather.weather[0].description.toUpperCase();
           })
           .catch(function (error) {
             console.log(error);
           });
       },
-         
-      
-
+      // this is used to convert unix to timestamp
       Unix_timestamp(t)
       {
       var dt = new Date(t*1000);
